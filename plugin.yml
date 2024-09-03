@@ -1,0 +1,14 @@
+name: DailyReward
+version: '${project.version}'
+main: eu.camonetwork.dailyreward.Main
+api-version: '1.15'
+prefix: DailyReward
+authors: [GrapJeje]
+
+commands:
+  dailyrewards:
+    description: Menu command for daily rewards.
+    aliases:
+      - daily
+      - dr
+    default: true
