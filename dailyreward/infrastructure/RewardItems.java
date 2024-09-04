@@ -63,8 +63,6 @@ public class RewardItems {
             return null;
          }
 
-
-
     }
 
     private ItemStack CandyItem(int amount) {

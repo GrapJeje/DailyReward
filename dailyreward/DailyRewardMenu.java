@@ -151,7 +151,7 @@ public class DailyRewardMenu extends InventoryMenu {
             return Material.GHAST_TEAR;
         } else if (reward.startsWith("candy")) {
             return Material.PAPER;
-        } else if (reward.equals("legendary")) {
+        } else if (reward.startsWith("key")) {
             return Material.TRIPWIRE_HOOK;
         } else if (reward.startsWith("material")) {
             String[] parts = reward.split("\\.");
@@ -165,9 +165,7 @@ public class DailyRewardMenu extends InventoryMenu {
             }
 
             return material;
-        }
-
-        else {
+        } else {
             return Material.BARRIER;
         }
     }
@@ -252,6 +250,9 @@ public class DailyRewardMenu extends InventoryMenu {
         int serverDay = Main.defaultConfig.getServerDay(player);
         boolean pClaimed = Main.defaultConfig.getPlayerClaimed(player) && playerDay >= day;
         boolean pBought = Main.defaultConfig.getPlayerBought(player) && playerDay >= day;
+
+        String[] parts = keyName.split("_");
+        keyName = parts[1];
 
         if (day > serverDay || day < serverDay) return;
         player.closeInventory();
