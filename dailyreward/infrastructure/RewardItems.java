@@ -5,19 +5,35 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class RewardItems {
-
     public ItemStack giveRewards(Player player, String reward) {
-        switch (reward) {
-            case "candy_15":
-                return this.CandyItem(15);
-            case "money_4":
-                return this.MoneyItem(4);
-            default:
-                player.sendMessage(Text.colorize("&cDe daily rewards hebben momenteel een error, contacteer een admin!"));
-                break;
-        }
+        if (reward.startsWith("candy")) {
+            String[] parts = reward.split("_");
+            int amount;
 
-        return null;
+            try {
+                amount = Integer.parseInt(parts[1]);
+            } catch (NumberFormatException e) {
+                player.sendMessage(Text.colorize("&cDe daily rewards hebben momenteel een error, contacteer een admin!"));
+                return null;
+            }
+
+            return this.CandyItem(amount);
+        } else if (reward.startsWith("money")) {
+            String[] parts = reward.split("_");
+            int amount;
+
+            try {
+                amount = Integer.parseInt(parts[1]);
+            } catch (NumberFormatException e) {
+                player.sendMessage(Text.colorize("&cDe daily rewards hebben momenteel een error, contacteer een admin!"));
+                return null;
+            }
+
+            return this.MoneyItem(amount);
+        } else {
+            player.sendMessage(Text.colorize("&cDe daily rewards hebben momenteel een error, contacteer een admin!"));
+            return null;
+        }
     }
 
     private ItemStack CandyItem(int amount) {

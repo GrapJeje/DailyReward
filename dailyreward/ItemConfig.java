@@ -14,9 +14,11 @@ public class ItemConfig extends ConfigManager {
     }
 
     /**
-     * Retrieves the rewards for a specific day.
-     * @param day The day for which the rewards should be retrieved.
-     * @return A list of strings containing the rewards, or an empty list if no rewards are found.
+     * Retrieves the list of rewards configured for a specific day.
+     *
+     * @param day The day for which to retrieve the rewards.
+     * @return A list of strings representing the rewards for the specified day.
+     *         Returns an empty list if no rewards are found for the given day.
      */
     public List<String> getRewardsForDay(int day) {
         if (this.getConfig() == null || !this.getConfig().contains("items.day" + day + ".rewards")) {
@@ -28,9 +30,11 @@ public class ItemConfig extends ConfigManager {
     }
 
     /**
-     * Retrieves all lores for a specific day.
-     * @param day The day for which the lores should be retrieved.
-     * @return A list of strings containing the lores, or an empty list if no lores are found.
+     * Retrieves the list of lores configured for a specific day.
+     *
+     * @param day The day for which to retrieve the lores.
+     * @return A list of strings representing the lores for the specified day.
+     *         Returns an empty list if no lores are found for the given day.
      */
     public List<String> getLoresForDay(int day) {
         if (this.getConfig() == null || !this.getConfig().contains("items.day" + day + ".lores")) {
@@ -42,8 +46,9 @@ public class ItemConfig extends ConfigManager {
     }
 
     /**
-     * Determines the maximum day number available in the configuration.
-     * @return The maximum day number, or 0 if no days are configured.
+     * Determines the maximum day number configured in the configuration file.
+     *
+     * @return The highest day number found in the configuration. Returns 0 if no days are configured.
      */
     public int getMaxDay() {
         if (this.getConfig() == null || !this.getConfig().contains("items")) {
@@ -70,6 +75,13 @@ public class ItemConfig extends ConfigManager {
         return maxDay;
     }
 
+    /**
+     * Checks if the "key" setting is present and true for a specific day.
+     *
+     * @param day The day for which to check the "key" setting.
+     * @return {@code true} if the "key" setting is present and true for the specified day;
+     *         {@code false} otherwise.
+     */
     public boolean getIfKey(int day) {
         if (this.getConfig() == null || !this.getConfig().contains("items")) {
             Bukkit.getLogger().warning("No configuration found for items.");

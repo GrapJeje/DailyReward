@@ -15,12 +15,12 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class DailyRewardMenu extends InventoryMenu {
 
     private final int price = 20;
     private boolean run = false;
-    private BukkitTask animationTask;
     private final Map<Integer, BukkitTask> animationTasks = new HashMap<>();
 
     public DailyRewardMenu() {
@@ -37,11 +37,7 @@ public class DailyRewardMenu extends InventoryMenu {
         this.fillBackground();
 
         // Add all the day items.
-        try {
-            this.DailyRewardsItem(player);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        this.DailyRewardsItem(player);
 
         run = true;
 
@@ -105,6 +101,8 @@ public class DailyRewardMenu extends InventoryMenu {
             animationTasks.remove(slot);
         }
 
+        Random random = new Random();
+
         int length = rewards.size();
         List<String> lores = Main.itemConfig.getLoresForDay(day);
 
@@ -121,19 +119,18 @@ public class DailyRewardMenu extends InventoryMenu {
                     return;
                 }
 
-                if (length == 0) {
-                    return;
-                }
+                if (length == 0) return;
 
                 String reward = rewards.get(index);
                 Material material = getMaterial(reward);
                 String lore = !lores.isEmpty() ? lores.get(index % lores.size()) : "";
 
                 clickableItem(slot, dayItem(material, countDay, lore), player, () -> {
+                    String randomReward = rewards.get(random.nextInt(length));
                     if (Main.itemConfig.getIfKey(day)) {
-                        nextStage(player, day, reward);
+                        nextStage(player, day, randomReward);
                     } else {
-                        nextStage(player, reward, day);
+                        nextStage(player, randomReward, day);
                     }
                 });
 
@@ -147,7 +144,6 @@ public class DailyRewardMenu extends InventoryMenu {
 
         animationTasks.put(slot, task);
     }
-
 
     private Material getMaterial(String reward) {
         reward = reward.toLowerCase();
