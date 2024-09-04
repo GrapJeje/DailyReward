@@ -153,7 +153,21 @@ public class DailyRewardMenu extends InventoryMenu {
             return Material.PAPER;
         } else if (reward.equals("legendary")) {
             return Material.TRIPWIRE_HOOK;
-        } else {
+        } else if (reward.startsWith("material")) {
+            String[] parts = reward.split("\\.");
+            Material material;
+
+            try {
+                material = Material.valueOf(parts[1].toUpperCase());
+            } catch (Exception e) {
+                player.sendMessage(Text.colorize("&cDe daily rewards hebben momenteel een error, contacteer een admin!"));
+                return null;
+            }
+
+            return material;
+        }
+
+        else {
             return Material.BARRIER;
         }
     }
