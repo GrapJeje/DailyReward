@@ -3,8 +3,12 @@ package eu.camonetwork.dailyreward;
 import eu.camonetwork.dailyreward.infrastructure.ConfigManager;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 public class DefaultConfig extends ConfigManager {
@@ -14,6 +18,31 @@ public class DefaultConfig extends ConfigManager {
 
     public boolean getIfEnabled() {
         return this.getConfig().getBoolean("enabled");
+    }
+
+    public List<OfflinePlayer> getAllPlayers() {
+        ConfigurationSection playerSection = this.getConfig().getConfigurationSection("players");
+
+        if (playerSection == null) return Collections.emptyList();
+
+        List<OfflinePlayer> offlinePlayer = new ArrayList<>();
+
+        for (String key : playerSection.getKeys(false)) {
+            UUID playerUUID = UUID.fromString(key);
+
+            offlinePlayer.add(Bukkit.getOfflinePlayer(playerUUID));
+        }
+
+        return offlinePlayer;
+    }
+
+    public void setServerDay(Player player, int day) {
+        this.getConfig().set("players." + player.getUniqueId() + ".serverday", day);
+        this.save();
+    }
+
+    public int getServerDay(Player player) {
+        return this.getConfig().getInt("players." + player.getUniqueId() + ".serverday", 1);
     }
 
     public void setPlayerDay(Player player, int day) {
