@@ -17,13 +17,13 @@ public class DailyRewardCommand implements CommandExecutor {
         if (!(sender instanceof Player)) return false;
         Player player = (Player) sender;
 
-        if (!Main.defaultConfig.getIfEnabled()) {
-            player.sendMessage(Text.colorize("&cDe daily rewards zijn momenteel uitgeschakeld. Contacteer een admin als je denkt dat dit een fout is."));
+        if (args.length == 1 && Objects.equals(args[0], "reload")) {
+            this.reloadConfig(player);
             return false;
         }
 
-        if (args.length == 1 && Objects.equals(args[0], "reload")) {
-            this.reloadConfig(player);
+        if (!Main.defaultConfig.getIfEnabled()) {
+            player.sendMessage(Text.colorize("&cDe daily rewards zijn momenteel uitgeschakeld. Contacteer een admin als je denkt dat dit een fout is."));
             return false;
         }
 

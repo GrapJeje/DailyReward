@@ -82,12 +82,12 @@ public class DefaultConfig extends ConfigManager {
     }
 
     public void setPlayerLongestStreak(Player player, int day) {
-        this.getConfig().set("players." + player.getUniqueId() + ".dag", day);
+        this.getConfig().set("players." + player.getUniqueId() + ".streak", day);
         this.save();
     }
 
     public int getPlayerLongestStreak(Player player) {
-        return this.getConfig().getInt("players." + player.getUniqueId() + ".dag");
+        return this.getConfig().getInt("players." + player.getUniqueId() + ".streak");
     }
 
     public void setAllTimeLongestStreak(Player player, int day) {
