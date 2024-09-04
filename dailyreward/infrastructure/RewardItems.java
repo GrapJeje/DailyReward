@@ -1,14 +1,8 @@
 package eu.camonetwork.dailyreward.infrastructure;
 
-import eu.camonetwork.dailyreward.Main;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.Iterator;
 
 public class RewardItems {
 
@@ -41,18 +35,5 @@ public class RewardItems {
                 .setDisplayName("&f€5000")
                 .setAmount(amount)
                 .build();
-    }
-
-    public void keyHelper(Player player, String keyName, int amount) {
-
-        if (keyName != null) {
-            if (Main.cp.getConfigHandler().getCrates().get(keyName.toLowerCase()) == null) {
-                Bukkit.getLogger().warning("Crate not found: " + keyName);
-                return;
-            }
-
-            Main.cp.getCrateHandler().giveCrateKey(player, keyName, amount);
-
-        }
     }
 }

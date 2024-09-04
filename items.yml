@@ -1,0 +1,13 @@
+items:
+  day1:
+    rewards:
+      - <reward>
+      - <reward2>
+    lore: ""
+    key: false
+  day2:
+    rewards:
+      - <reward>
+      - <reward2>
+    lore: ""
+    key: true

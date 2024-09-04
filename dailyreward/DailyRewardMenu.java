@@ -3,19 +3,25 @@ package eu.camonetwork.dailyreward;
 import eu.camonetwork.dailyreward.infrastructure.InventoryMenu;
 import eu.camonetwork.dailyreward.infrastructure.ItemBuilder;
 import eu.camonetwork.dailyreward.infrastructure.Text;
-import org.black_ixx.playerpoints.PlayerPoints;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitTask;
 
-import java.util.UUID;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class DailyRewardMenu extends InventoryMenu {
 
     private final int price = 20;
+    private boolean run = false;
+    private BukkitTask animationTask;
+    private final Map<Integer, BukkitTask> animationTasks = new HashMap<>();
 
     public DailyRewardMenu() {
         this.setName("Daily Rewards");
@@ -25,11 +31,19 @@ public class DailyRewardMenu extends InventoryMenu {
 
     @Override
     protected void update() {
+        if (player == null) return;
+
         // Fill the background with filler item.
         this.fillBackground();
 
         // Add all the day items.
-        this.DailyRewardsItem(player);
+        try {
+            this.DailyRewardsItem(player);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        run = true;
 
         // Add all the info items.
         inventory.setItem(21, this.StreakItem(player));
@@ -37,38 +51,115 @@ public class DailyRewardMenu extends InventoryMenu {
         inventory.setItem(23, this.longestStreakItem(player));
     }
 
+    @Override
+    public void onClose(InventoryCloseEvent event) {
+        run = false;
+        for (BukkitTask task : animationTasks.values()) {
+            if (task != null) {
+                task.cancel();
+            }
+        }
+        animationTasks.clear();
+    }
+
     private void DailyRewardsItem(Player player) {
-        DefaultConfig config = new DefaultConfig();
-        int currentDay = config.getPlayerDay(player);
+        int currentDay = Main.defaultConfig.getPlayerDay(player);
+        int maxDay = Main.itemConfig.getMaxDay();
         int baseDay = ((currentDay - 1) / 7) * 7 + 1;
 
-        this.clickableItem(10, this.dayItem(Material.GHAST_TEAR, baseDay, "&a20k!"), player, () -> {
-            this.nextStage(player, "money_4", baseDay);
-        });
+        for (int i = 0; i < 7; i++) {
+            int slot = 10 + i;
+            int day = baseDay + i;
+            int countDay = baseDay + i;
 
-        this.clickableItem(11, this.dayItem(Material.PAPER, baseDay + 1, "&d15 Candy!"), player, () -> {
-            this.nextStage(player, "candy_15", baseDay + 1);
-        });
+            if (day > maxDay) {
+                day = (day - 1) % maxDay + 1;
+            }
 
-        this.clickableItem(12, this.dayItem(Material.PAPER, baseDay + 2, "&d15 Candy!"), player, () -> {
-            this.nextStage(player, "candy_15", baseDay + 2);
-        });
+            final int finalDay = day;
 
-        this.clickableItem(13, this.dayItem(Material.PAPER, baseDay + 3, "&d15 Candy!"), player, () -> {
-            this.nextStage(player, "candy_15", baseDay + 3);
-        });
+            List<String> rewards = Main.itemConfig.getRewardsForDay(day);
+            List<String> lores = Main.itemConfig.getLoresForDay(day);
 
-        this.clickableItem(14, this.dayItem(Material.PAPER, baseDay + 4, "&d15 Candy!"), player, () -> {
-            this.nextStage(player, "candy_15", baseDay + 4);
-        });
+            if (rewards.isEmpty()) continue;
 
-        this.clickableItem(15, this.dayItem(Material.PAPER, baseDay + 5, "&d15 Candy!"), player, () -> {
-            this.nextStage(player, "candy_15", baseDay + 5);
-        });
+            if (rewards.size() > 1) {
+                this.showAnimation(rewards, player, slot, day, countDay);
+            } else {
+                String reward = rewards.get(0);
+                String lore = !lores.isEmpty() ? lores.get(0) : "";
+                this.clickableItem(slot, this.dayItem(this.getMaterial(reward), countDay, lore), player, () -> {
+                    if (Main.itemConfig.getIfKey(finalDay)) {
+                        this.nextStage(player, finalDay, reward);
+                    } else {
+                        this.nextStage(player, reward, finalDay);
+                    }
+                });
+            }
+        }
+    }
 
-        this.clickableItem(16, this.dayItem(Material.TRIPWIRE_HOOK, baseDay + 6, "&4&l&ka &6&lLegendary key! &4&l&ka"), player, () -> {
-            this.nextStage(player, baseDay + 6, "legendary");
-        });
+    private void showAnimation(List<String> rewards, Player player, int slot, int day, int countDay) {
+        if (animationTasks.containsKey(slot)) {
+            animationTasks.get(slot).cancel();
+            animationTasks.remove(slot);
+        }
+
+        int length = rewards.size();
+        List<String> lores = Main.itemConfig.getLoresForDay(day);
+
+        BukkitTask task = Bukkit.getScheduler().runTaskTimer(Main.getPlugin(Main.class), new Runnable() {
+            int index = 0;
+
+            @Override
+            public void run() {
+                if (!run) {
+                    if (animationTasks.containsKey(slot)) {
+                        animationTasks.get(slot).cancel();
+                        animationTasks.remove(slot);
+                    }
+                    return;
+                }
+
+                if (length == 0) {
+                    return;
+                }
+
+                String reward = rewards.get(index);
+                Material material = getMaterial(reward);
+                String lore = !lores.isEmpty() ? lores.get(index % lores.size()) : "";
+
+                clickableItem(slot, dayItem(material, countDay, lore), player, () -> {
+                    if (Main.itemConfig.getIfKey(day)) {
+                        nextStage(player, day, reward);
+                    } else {
+                        nextStage(player, reward, day);
+                    }
+                });
+
+                index++;
+
+                if (index >= length) {
+                    index = 0;
+                }
+            }
+        }, 0L, 20L);
+
+        animationTasks.put(slot, task);
+    }
+
+
+    private Material getMaterial(String reward) {
+        reward = reward.toLowerCase();
+        if (reward.startsWith("money")) {
+            return Material.GHAST_TEAR;
+        } else if (reward.startsWith("candy")) {
+            return Material.PAPER;
+        } else if (reward.equals("legendary")) {
+            return Material.TRIPWIRE_HOOK;
+        } else {
+            return Material.BARRIER;
+        }
     }
 
     // Give a custom item.
@@ -207,21 +298,18 @@ public class DailyRewardMenu extends InventoryMenu {
     }
 
     private ItemStack dayItem(Material material, int day, String reward) {
-        boolean claimed = Main.defaultConfig.getPlayerClaimed(player);
+        if (player == null) return new ItemStack(Material.BARRIER);
+
         ItemBuilder itemBuilder = ItemBuilder.create();
         itemBuilder.setType(material)
                 .setDisplayName("&cDag " + day)
                 .addLore(reward)
                 .addLore(" ");
 
-        if (day > 64) {
-            itemBuilder.setAmount(1);
-        } else {
-            itemBuilder.setAmount(day);
-        }
+        itemBuilder.setAmount(Math.min(day, 64));
 
         int playerDay = Main.defaultConfig.getPlayerDay(player) + 1;
-        if (claimed) playerDay = Main.defaultConfig.getPlayerDay(player);
+        if (Main.defaultConfig.getPlayerClaimed(player)) playerDay = Main.defaultConfig.getPlayerDay(player);
 
         int serverDay = Main.defaultConfig.getServerDay(player);
         boolean correctDay = playerDay == day && day == serverDay;
@@ -232,10 +320,10 @@ public class DailyRewardMenu extends InventoryMenu {
             itemBuilder.addLore("&aClick om opnieuw te claimen voor &d" + price + " candy&a.");
             itemBuilder.addGlowItem();
         } else if (pClaimed && pBought || day < serverDay) {
-            itemBuilder.addLore("&aAlready claimed!");
+            itemBuilder.addLore("&aAl geclaimed!");
             itemBuilder.addGlowItem();
         } else if (correctDay) {
-            itemBuilder.addLore("&aClick to claim!");
+            itemBuilder.addLore("&aKlik om te claimen!");
         } else if (day == serverDay + 1) {
             itemBuilder.addLore("&aKom morgen terug om dit te claimen!");
         }

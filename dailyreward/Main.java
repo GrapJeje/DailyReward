@@ -18,6 +18,7 @@ public final class Main extends JavaPlugin {
     public static Main instance;
     public static List<ConfigManager> configList = new ArrayList<>();
     public static DefaultConfig defaultConfig = new DefaultConfig();
+    public static ItemConfig itemConfig = new ItemConfig();
     public static RewardItems rewardItems = new RewardItems();
     private void registerCommand(String cmdName, CommandExecutor executor, TabCompleter tabCompleter) {
         PluginCommand command = getServer().getPluginCommand(cmdName);
@@ -41,6 +42,7 @@ public final class Main extends JavaPlugin {
         saveDefaultConfig();
 
         configList.add(defaultConfig);
+        configList.add(itemConfig);
 
         configList.forEach(ConfigManager::reload);
 
