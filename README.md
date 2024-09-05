@@ -10,10 +10,26 @@ CratesPlus: https://www.spigotmc.org/resources/cratesplus-free-crates-plugin-1-8
 
 Realtime: Custom plugin @CamoNetwork for the minetopia
 
+## Permissions
+
+camo.dailyrewards.open : default Yes - Permission to open the main menu.
+
+camo.admin.reload : default OP - Permission to reload the plugin.
+
+## Commands
+
+/Daily : Permission = camo.dailyrewards.open - Opens the main menu of the Daily Reward system.
+
+/Daily info : Permission = Default - Opens an info menu about the plugin.
+
+/Daily Reload : Permission = camo.admin.reload - Reload the config of the plugin.
+
 ## Config's
 
 ### Config.yml
 Enabled : boolean || Set if the /Daily command is enabled.
+
+ResetTime : Calendar || Set the reset time of the Daily Rewards **CAN ONLY BE RELOADED WITH A PLUGIN RELOAD!**
 
 Players : List String || Keys are the UUID of the players.
 
