@@ -6,10 +6,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class DefaultConfig extends ConfigManager {
 
@@ -24,6 +21,31 @@ public class DefaultConfig extends ConfigManager {
      */
     public boolean getIfEnabled() {
         return this.getConfig().getBoolean("enabled");
+    }
+
+    /**
+     * Stel de reset-tijd in vanuit de config in de Calendar
+     *
+     * @param timeZone De gewenste tijdzone
+     * @return een Calendar object met de ingestelde tijd
+     */
+    public Calendar getResetCalendar(TimeZone timeZone) {
+        String resetTimeString = this.getConfig().getString("resettime", "00:00:00:000");
+        assert resetTimeString != null;
+
+        String[] timeParts = resetTimeString.split(":");
+        int hour = Integer.parseInt(timeParts[0]);
+        int minute = Integer.parseInt(timeParts[1]);
+        int second = Integer.parseInt(timeParts[2]);
+        int millisecond = Integer.parseInt(timeParts[3]);
+
+        Calendar calendar = Calendar.getInstance(timeZone);
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minute);
+        calendar.set(Calendar.SECOND, second);
+        calendar.set(Calendar.MILLISECOND, millisecond);
+
+        return calendar;
     }
 
     /**

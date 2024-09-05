@@ -35,11 +35,8 @@ public class DailyRewardListener implements Listener {
     private void scheduleDailyMidnightTask() {
         TimeZone timeZone = TimeZone.getTimeZone("Europe/Amsterdam");
 
-        Calendar calendar = Calendar.getInstance(timeZone);
-        calendar.set(Calendar.HOUR_OF_DAY, 8);
-        calendar.set(Calendar.MINUTE, 32);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
+        Calendar calendar = Main.defaultConfig.getResetCalendar(timeZone);
+        Bukkit.getLogger().info(Text.colorize("&aDaily Rewards reset scheduled for: " + calendar.getTime()));
 
         Date midnight = calendar.getTime();
         if (midnight.before(new Date())) {
