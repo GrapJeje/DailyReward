@@ -161,6 +161,7 @@ public class DailyRewardMenu extends InventoryMenu {
                 material = Material.valueOf(parts[1].toUpperCase());
             } catch (Exception e) {
                 player.sendMessage(Text.colorize("&cDe daily rewards hebben momenteel een error, contacteer een admin!"));
+                Bukkit.getServer().getPluginManager().disablePlugin(Main.instance);
                 return null;
             }
 

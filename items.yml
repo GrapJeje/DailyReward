@@ -1,13 +1,53 @@
 items:
   day1:
     rewards:
-      - <reward>
-      - <reward2>
-    lore: ""
+      - "money_4"
+    lores:
+      - "&a20k!"
     key: false
   day2:
     rewards:
-      - <reward>
-      - <reward2>
-    lore: ""
+      - "candy_25"
+    lores:
+      - "&d25 Candy!"
+    key: false
+  day3:
+    rewards:
+      - "material.enchanted_golden_apple.2"
+    lores:
+      - "&62 Enchanted Golden Apples!"
+    key: false
+  day4:
+    rewards:
+      - "material.fire_charge.8"
+      - "material.fire_charge.10"
+      - "material.fire_charge.2"
+      - "material.fire_charge.3"
+      - "material.dragon_breath.1"
+    lores:
+      - "&38 Mana orbs!"
+      - "&310 Mana orbs!"
+      - "&32 Mana orbs!"
+      - "&33 Mana orbs!"
+      - "&d1 Dragons Breath"
+    key: false
+  day5:
+    rewards:
+      - "key_rare"
+    lores:
+      - "&c&l&ka &9&lRare Key &c&l&ka"
+    key: true
+  day6:
+    rewards:
+      - "money_10"
+      - "candy_50"
+    lores:
+      - "&a50k!"
+      - "&d50 Candy!"
+    key: false
+  day7:
+    rewards:
+      - "key_legendary"
+    lores:
+      - "&c&l&ka &6&lLegendary Key &c&l&ka"
     key: true

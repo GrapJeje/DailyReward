@@ -7,8 +7,10 @@ authors: [GrapJeje]
 
 depend:
   - PlayerPoints
-  - Realtime
   - CratesPlus
+
+softdepend:
+  - Realtime
 
 commands:
   dailyrewards:
@@ -16,4 +18,12 @@ commands:
     aliases:
       - daily
       - dr
+    default: true
+
+permissions:
+  camo.admin.reload:
+    description: Config reload plugin
+    default: op
+  camo.dailyrewards.open:
+    description: Permission to open the main menu.
     default: true

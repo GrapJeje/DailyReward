@@ -2,7 +2,6 @@ package eu.camonetwork.dailyreward;
 
 import eu.camonetwork.dailyreward.infrastructure.Text;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -33,13 +32,12 @@ public class DailyRewardListener implements Listener {
         }
     }
 
-
     private void scheduleDailyMidnightTask() {
         TimeZone timeZone = TimeZone.getTimeZone("Europe/Amsterdam");
 
         Calendar calendar = Calendar.getInstance(timeZone);
-        calendar.set(Calendar.HOUR_OF_DAY, 1);
-        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.HOUR_OF_DAY, 8);
+        calendar.set(Calendar.MINUTE, 32);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
 
@@ -56,26 +54,26 @@ public class DailyRewardListener implements Listener {
                 Bukkit.getScheduler().runTask(Main.instance, () -> {
 
                     for (OfflinePlayer player : Main.defaultConfig.getAllPlayers()) {
-                        Player onlinePlayer = (Player) player;
-
-                        int dayCount = Main.defaultConfig.getPlayerDay(onlinePlayer);
-                        int serverDay = Main.defaultConfig.getServerDay(onlinePlayer);
+                        int dayCount = Main.defaultConfig.getPlayerDay(player);
+                        int serverDay = Main.defaultConfig.getServerDay(player);
 
                         if (dayCount == serverDay) {
-                            Main.defaultConfig.setServerDay(onlinePlayer, serverDay + 1);
+                            Main.defaultConfig.setServerDay(player, serverDay + 1);
                         } else {
-                            Main.defaultConfig.setPlayerSteak(onlinePlayer, 0);
-                            Main.defaultConfig.setPlayerDay(onlinePlayer, 0);
-                            Main.defaultConfig.setServerDay(onlinePlayer, 1);
+                            Main.defaultConfig.setPlayerSteak(player, 0);
+                            Main.defaultConfig.setPlayerDay(player, 0);
+                            Main.defaultConfig.setServerDay(player, 1);
                         }
 
-                        Main.defaultConfig.setPlayerClaimed(onlinePlayer, false);
-                        Main.defaultConfig.setPlayerBought(onlinePlayer, false);
+                        Main.defaultConfig.setPlayerClaimed(player, false);
+                        Main.defaultConfig.setPlayerBought(player, false);
                     }
 
-                    for (Player onlineplayer : Bukkit.getOnlinePlayers()) {
-                        onlineplayer.sendMessage(Text.colorize("&3De daily rewards zijn gereset!"));
-                        onlineplayer.playSound(onlineplayer.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
+                    Bukkit.getLogger().info(Text.colorize("&aDailyRewards updaten...."));
+
+                    for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                        onlinePlayer.sendMessage(Text.colorize("&3De daily rewards zijn gereset!"));
+                        onlinePlayer.playSound(onlinePlayer.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
                     }
                 });
             }

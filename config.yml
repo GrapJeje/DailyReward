@@ -1,6 +1,12 @@
 enabled: true
 
+players:
+  37819856-6e9a-4866-9a73-922c8c684b21:
+    dag: 0
+    serverday: 1
+    streak: 1
+    claimed: false
+    bought: false
+
 streak:
   37819856-6e9a-4866-9a73-922c8c684b21: 1
-
-players:

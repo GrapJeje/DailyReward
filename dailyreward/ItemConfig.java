@@ -23,6 +23,7 @@ public class ItemConfig extends ConfigManager {
     public List<String> getRewardsForDay(int day) {
         if (this.getConfig() == null || !this.getConfig().contains("items.day" + day + ".rewards")) {
             Bukkit.getLogger().warning("No reward configuration found for day " + day);
+            Bukkit.getServer().getPluginManager().disablePlugin(Main.instance);
             return new ArrayList<>();
         }
 
@@ -39,6 +40,7 @@ public class ItemConfig extends ConfigManager {
     public List<String> getLoresForDay(int day) {
         if (this.getConfig() == null || !this.getConfig().contains("items.day" + day + ".lores")) {
             Bukkit.getLogger().warning("No lores configuration found for day " + day);
+            Bukkit.getServer().getPluginManager().disablePlugin(Main.instance);
             return new ArrayList<>();
         }
 
@@ -53,6 +55,7 @@ public class ItemConfig extends ConfigManager {
     public int getMaxDay() {
         if (this.getConfig() == null || !this.getConfig().contains("items")) {
             Bukkit.getLogger().warning("No configuration found for items.");
+            Bukkit.getServer().getPluginManager().disablePlugin(Main.instance);
             return 0;
         }
 
@@ -68,6 +71,7 @@ public class ItemConfig extends ConfigManager {
                     }
                 } catch (NumberFormatException e) {
                     Bukkit.getLogger().warning("Invalid day format in configuration: " + key);
+                    Bukkit.getServer().getPluginManager().disablePlugin(Main.instance);
                 }
             }
         }
@@ -85,6 +89,7 @@ public class ItemConfig extends ConfigManager {
     public boolean getIfKey(int day) {
         if (this.getConfig() == null || !this.getConfig().contains("items")) {
             Bukkit.getLogger().warning("No configuration found for items.");
+            Bukkit.getServer().getPluginManager().disablePlugin(Main.instance);
             return false;
         }
 
